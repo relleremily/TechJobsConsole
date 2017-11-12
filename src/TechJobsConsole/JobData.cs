@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System;
 
 namespace TechJobsConsole
 {
@@ -45,11 +46,12 @@ namespace TechJobsConsole
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
 
+
             foreach (Dictionary<string, string> row in AllJobs)
             {
-                string aValue = row[column];
+                string aValue = row[column].ToString().ToLower();
 
-                if (aValue.Contains(value))
+                if (aValue.Contains(value.ToString().ToLower()))
                 {
                     jobs.Add(row);
                 }
@@ -58,10 +60,43 @@ namespace TechJobsConsole
             return jobs;
         }
 
-        /*
-         * Load and parse data from job_data.csv
-         */
-        private static void LoadData()
+
+        public static List<Dictionary<string, string>> FindByValue (string value)
+        {
+            // load data, if not already loaded
+            // if (String.Equals(aValue, value, StringComparison.CurrentCultureIgnoreCase))
+            LoadData();
+            //var comparer = StringComparer.OrdinalIgnoreCase;
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            foreach (Dictionary<string, string> row in AllJobs)
+            {
+                foreach (KeyValuePair<string, string> jobinfo in row)
+                {
+                    string aValue = jobinfo.Value.ToString().ToLower();
+
+                        if (aValue.Contains(value.ToString().ToLower()) && !jobs.Contains(row))
+                        {
+                            jobs.Add(row);
+                        }
+
+                }
+
+            }
+
+            return jobs;
+
+
+
+
+
+
+        }
+
+            /*
+             * Load and parse data from job_data.csv
+             */
+            private static void LoadData()
         {
 
             if (IsDataLoaded)
